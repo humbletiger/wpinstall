@@ -4,8 +4,11 @@ echo "============================================"
 echo "WordPress Install Script"
 echo "============================================"
 
+#note: check to see if wpcli is installed. If not, abort.
 echo "Project Name:"
 read -e pname
+
+#note: check to see if there's already a folder in there already 
 
 echo "Database Name: "
 read -e dbname
@@ -33,7 +36,7 @@ echo "Renaming to $pname"
 mv  wordpress $pname 
 cd $pname
 
-echo "Creating MYSQL stuff. Root password required."
+echo "Creating MYSQL stuff. MySQL admin password required."
 
 MYSQL=`which mysql`
 
@@ -46,9 +49,23 @@ SQL="${Q1}${Q2}${Q3}${Q4}"
 
 $MYSQL -uroot -p -e "$SQL"
 
-echo "Running wp-cli core config and db create"
+echo "Running WP-CLI core config"
 wp core config --dbname=$dbname --dbuser=$dbuser --dbpass=$dbpass
-#wp db create
+
+echo "Site title:"
+read -e sitetitle
+
+echo "WP-admin User:"
+read -e adminuser
+
+echo "WP-admin Password:"
+read -e adminpassword
+
+echo "WP-admin Email:"
+read -e adminemail
+
+echo "Running WP-CLI core install"
+wp core install --url="http://localhost/$pname" --title="$sitetitle" --admin_user=$adminuser --admin_password=$adminpassword --admin_email=$adminemail
 
 echo "Cleaning Up"
 cd ..
